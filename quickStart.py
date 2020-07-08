@@ -4,7 +4,6 @@ import json
 import requests
 from slackeventsapi import SlackEventAdapter
 from slack import WebClient
-from atlassian import Confluence
 from tinydb import TinyDB, Query
 
 db = TinyDB('./db.json')
@@ -17,18 +16,14 @@ slack_client = WebClient(SLACK_BOT_TOKEN)
 
 CONFLUENCE_TOKEN = os.environ["CONFLUENCE_TOKEN"]
 
-s = requests.Session()
-s.headers['Authorization'] = 'Bearer ' + CONFLUENCE_TOKEN
+userEmail = os.environ["CONFLUENCE_USER_EMAIL"]
 
-confluence = Confluence(
-    url='https://iexecproject.atlassian.net/',
-    session=s)
+headers = {
+   "Accept": "application/json"
+}
 
-
-# SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-# SPREADSHEET_ID = '1GELytQZ4vGt2v-yqhDkQrh3Lhu0PqvD_QcwiNey9Btc'
-# gc = gspread.service_account()
-# sh = gc.open("testSlackBot")
+basUrl = "https://iexecproject.atlassian.net"
+urlContent = "https://iexecproject.atlassian.net/wiki/rest/api/content/"
 
 CHANNEL = '????'
 
@@ -42,13 +37,10 @@ def getUsername(id):
     r = requests.get('https://slack.com/api/users.info', params=payload)
     return r.text
 
-def initSheet(sheetId):
-    print("init")
-
 # Messaging part
 @slack_events_adapter.on("message")
 def handle_message(event_data):
-    message = event_data["event"]
+    # message = event_data["event"]
     # user = getUsername(message.get('user'))
     # user = json.loads(user)
     # print(user["user"]["real_name"])
@@ -59,10 +51,15 @@ def handle_message(event_data):
 #    slack_client.chat_postMessage(text=message)
     # print(sh.sheet1.update('A2', user["user"]["real_name"]))
     # print(sh.sheet1.update('B2', message.get('text')))
-    members = json.loads(getMembers())
+    # members = json.loads(getMembers())
     # for i in range(len(members["members"])):
     #     print(sh.sheet1.update("A"+ str(i+2), json.loads(getUsername(members["members"][i]))["user"]["real_name"]))
+    response = requests.request(
+        "GET",
+        urlContent + '153944164?expand=body.storage',
+        headers=headers,
+        auth=(userEmail,CONFLUENCE_TOKEN)
+    )
+    print(json.dumps(json.loads(response.text), sort_keys=True, indent=2, separators=(",", ": ")))
 
 slack_events_adapter.start(port=3030)
-
-# worksheet = sh.add_worksheet(title="A worksheet", rows="100", cols="20")
