@@ -63,6 +63,12 @@ def genNewDay():
         res = day.render(DAY_NAME="vendredi", DAY_DATE="10/01")
     return res
 
+def insertNewDay():
+    return ""
+
+def insertNewReport():
+    return ""
+
 def genNewReport():
     return ""
 
