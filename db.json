@@ -1,1 +1,25 @@
-
+{
+    "members": {
+        "1": {
+            "name": "nath",
+            "id": 657,
+            "notes": "<p>rapport + script</p>",
+            "blockers": "no"
+        }, 
+        "2": {
+            "name": "jerem",
+            "id": 524,
+            "notes": "<p>doc</p>",
+            "blockers": "no"
+        }
+    },
+    "sprints": {
+        "1": {
+                "pageId": 1386741813,
+                "pageName": "sprint \"Pulco\"",
+                "sprintName": "Pulco",
+                "sprintStart": "06/07/2020",
+                "sprintStop": "17/07/2020"
+            }
+    }
+}

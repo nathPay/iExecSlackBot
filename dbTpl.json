@@ -3,19 +3,20 @@
         "1": {
             "name": "nath",
             "id": 657,
-            "notes": "<p>rapport + script</p>",
+            "yesterday": "<p>It's Work</p>",
+            "today": "<p>rapport + script</p>",
             "blockers": "no"
         }, 
         "2": {
             "name": "jerem",
             "id": 524,
-            "notes": "<p>doc</p>",
+            "yesterday": "<p>It's Work</p>",
+            "today": "<p>doc</p>",
             "blockers": "no"
         }
     },
-    "confluence": {
-        "currentSprintId": 1386741813,
-        "allSprints": [
+    "sprints": {
+        "1": [
             {
                 "pageId": 1386741813,
                 "pageName": "sprint \"Pulco\"",

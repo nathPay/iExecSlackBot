@@ -9,6 +9,10 @@ from jinja2 import Template
 
 db = TinyDB('./db.json')
 
+Q = Query()
+members = db.table('members')
+sprints = db.table('sprints')
+
 SLACK_SIGNING_SECRET = os.environ["SLACK_SIGNING_SECRET"]
 slack_events_adapter = SlackEventAdapter(SLACK_SIGNING_SECRET, "/slack/events")
 
@@ -49,7 +53,8 @@ def getUsername(id):
     r = requests.get('https://slack.com/api/users.info', params=payload)
     return r.text
 
-def genNewSprint(sprintScrumMaster, sprintStart, sprintEnd):
+def genNewSprint(sprintScrumMaster, sprintStart, sprintEnd, sprintName, sprintID):
+    sprints.insert()
     with open('newSprint.html.j2', 'r') as file:
         sprintPageTpl = file.read()
         sprint = Template(sprintPageTpl);
@@ -62,6 +67,13 @@ def genNewDay():
         day = Template(dayTpl);
         res = day.render(DAY_NAME="vendredi", DAY_DATE="10/01")
     return res
+
+
+# Merge tout les reports la journée et le push sur confluence
+def endDay():
+    members = db.search(q.members)
+    print(members)
+    return ""
 
 def insertNewDay():
     return ""
@@ -93,6 +105,9 @@ def getVersionOf(id):
         auth=(userEmail,CONFLUENCE_TOKEN)
     )
     return json.loads(response.text)["version"]["number"]
+
+def getCurrentSprint():
+    return sprints.get(doc_id=len(sprints))
 
 # Messaging part
 @slack_events_adapter.on("message")
@@ -142,5 +157,11 @@ def handle_message(event_data):
     # )
     # print(json.dumps(json.loads(response.text), sort_keys=True, indent=2, separators=(",", ": ")))
     print(version)
+
+# members.insert({'name': 'User1', 'id': 0})
+# sprints.insert({"pageId": 00000,"pageName": "oui","sprintName": "yes","sprintStart": "06/07/2020","sprintStop": "17/07/2020"})
+
+print()
+# endDay()
 
 slack_events_adapter.start(port=3030)
