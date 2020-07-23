@@ -112,8 +112,9 @@ def getCurrentSprint():
     return sprints.get(doc_id=len(sprints))
 
 def startConversationWith(user):
-    slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
-
+    if user["convState"] == 0:
+        slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
+    return
 
 # @slack_events_adapter.on('sprint')
 # def result():
@@ -132,26 +133,26 @@ def handle_message(event_data):
     user = members.search(Q.id.matches(message["user"]))[0]
     if user != config.BOT_ID:
         if user["convState"] == 0:
-            if message["text"] != "yes":
+            if message["text"] != "yes" and message["text"] != "Yes":
                 slack_client.chat_postMessage(text="Sorry you can only answer by yes :) please try again!", token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
                 return
             user["convState"] = user["convState"] + 1
-            members.update({"convState": user["convState"], "id": user["id"]})
+            members.update({"convState": user["convState"]}, Q.id == user["id"])
             slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
             return
         if user["convState"] == 1:
             user["convState"] = user["convState"] + 1
-            members.update({"yesterday": slackdown.render(message['text']), "convState": user["convState"], "id": user["id"]})
+            members.update({"yesterday": slackdown.render(message['text']), "convState": user["convState"]}, Q.id == user["id"])
             slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
             return
         if user["convState"] == 2:
             user["convState"] = user["convState"] + 1
-            members.update({"today": slackdown.render(message['text']), "convState": user["convState"], "id": user["id"]})
+            members.update({"today": slackdown.render(message['text']), "convState": user["convState"]}, Q.id == user["id"])
             slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
             return
         if user["convState"] == 3:
             user["convState"] = user["convState"] + 1
-            members.update({"blockers": slackdown.render(message['text']), "convState": user["convState"], "id": user["id"]})
+            members.update({"blockers": slackdown.render(message['text']), "convState": user["convState"]}, Q.id == user["id"])
             slack_client.chat_postMessage(text=config.QUESTIONS[user["convState"]], token=config.SLACK_BOT_TOKEN, channel=user["imChannelID"])
             return
     return
@@ -215,14 +216,16 @@ def run_daily_meeting():
             tmpUser["profile"] = ""
             members.insert(tmpUser)
     weekno = datetime.datetime.today().weekday()
-    if weekno >= 5:
-        return 
-    for el in members.all():
-        startConversationWith(el)
-    return
+#     if weekno >= 5:
+#         return 
+#     for el in members.all():
+#         startConversationWith(el)
+#     return
 
 run_daily_meeting()
-
+user = members.search(Q.id.matches("UCZFH9ZHR"))[0]
+startConversationWith(user)
+print(user)
 # def dailyThread():
 #     schedule.every().day.at(config.TIME).do(run_daily_meeting)
 #     #  \
