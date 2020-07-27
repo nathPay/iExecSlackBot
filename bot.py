@@ -57,14 +57,14 @@ def genNewSprint(sprintScrumMaster, sprintStart, sprintEnd, sprintName, sprintID
     sprints.insert()
     with open('newSprint.html.j2', 'r') as file:
         sprintPageTpl = file.read()
-        sprint = Template(sprintPageTpl);
+        sprint = Template(sprintPageTpl)
         res = sprint.render(SPRINT_SCRUM_MASTER=sprintScrumMaster, SPRINT_START=sprintStart, SPRINT_END=sprintEnd)
     return res
 
 def genNewDay():
     with open('newDay.html.j2', 'r') as file:
         dayTpl = file.read()
-        day = Template(dayTpl);
+        day = Template(dayTpl)
         res = day.render(DAY_NAME="vendredi", DAY_DATE="10/01")
     return res
 
@@ -72,9 +72,11 @@ def genNewDay():
 # Merge tout les reports la journée et le push sur confluence
 def endDay():
     users = members.all()
+    reports = []
     for user in users:
-        print(user)
-
+        if not user["is_bot"]:
+            reports.append(genNewReport(user["yesterday"], user["today"], user["blockers"]))
+    
     return ""
 
 def insertNewDay():
@@ -83,8 +85,12 @@ def insertNewDay():
 def insertNewReport():
     return ""
 
-def genNewReport():
-    return ""
+def genNewReport(yesterday, today, blockers):
+    with open('newSprint.html.j2', 'r') as file:
+        reportTpl = file.read()
+        report = Template(reportTpl)
+        res = report.render(YESTERDAY_NOTES=yesterday, DAY_NOTES=today, DAY_BLOCKERS=blockers)
+    return res
 
 def getCurrentSprintPageContentOf(id):
     response = requests.request(

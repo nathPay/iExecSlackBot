@@ -1,16 +1,23 @@
-# iExecSlackBot
+# iExecBot
 
-1 channel pour récupérer les users et lancer le daily avec les bon parametres.
+1 channel pour récupérer les users et lancer le daily avec les bons parametres.
 
 Des messages persos a chaque user pour savoir ce qu'ils ont fait hier aujourd'hui et s'il y a des blockers.
 
-# Etape 1: GOOD
-On get les membres du channel et on crée les utilisateurs en conséquences dans la DB.
+# TODO:
 
-# Etape 2: GOOD
-On envoie les questions à chaque user a une certaine heure.
+- Envoie et formattage du rapport tout les soir sur confluence
+- Slash command pour lancer un sprint avec des paramètres (ou autre méthode)
+- Accepter les modifications des messages
+- Rendre le code propre :3
+- Adapter le slack bot pour le futur nouveau daily meeting
 
-# Etape 3: WIP
-On envoie le rapport sur confluence tous les soirs
+### Bonus
+- Suivi du temps de travail
+- Vérification des personnes OFF sur payfit
+- Faire un recap de la journée dans le channel dev-bot-info tous les soirs
 
-# Etape 4:
+# DONE:
+- Formattage et templating des sprints
+- On get les membres du channel et on crée les utilisateurs en conséquences dans la DB.
+- On envoie les questions à chaque user a une certaine heure.
